@@ -1,74 +1,93 @@
 import React, { useEffect, useRef, useState } from "react";
-import Chessboard from "chessboardjsx"; // Import the chessboard from chessboardjsx library
+import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js"; // Import the Chess class from chess.js
 
-// We can't import stockfish here because Vite doesn't support it, that's why we rely on the window.stockfish later
-
 const ChessGame = () => {
-  // Create a new chess game instance
   const chessGame = new Chess();
-
-  // State to keep track of the current position on the chessboard (human's and bot's)
   const [position, setPosition] = useState(chessGame.fen());
-
-  // State to keep track of whether the bot is thinking
   const [isBotThinking, setIsBotThinking] = useState(false);
-
-  // HOW STOCKFISH WAKES UP, THINKS AND MOVES: Initialize Stockfish to be able to manage it, initial state is "null" because there are no moves yet
   const stockfishRef = useRef(null);
 
   useEffect(() => {
-    //Initialize stockfish engine
-    if (window.Stockfish) {
-      stockfishRef.current = window.Stockfish();
+    const initializeStockfish = () => {
+      if (window.Stockfish) {
+        console.log("Stockfish is available.");
+        stockfishRef.current = window.Stockfish();
+        stockfishRef.current.onmessage = (event) => {
+          console.log("Stockfish message:", event);
 
-      //Check what stockfish considers the best move
-      stockfishRef.current.onmessage = (event) => {
-        if (event && event.startsWith("bestmove")) {
-          // Extract the numerical position with its index since it comes as "best-move e4"
-          const bestMove = event.split(" ")[1];
+          if (event && event.startsWith("bestmove")) {
+            const bestMove = event.split(" ")[1];
+            console.log("Best move from Stockfish:", bestMove);
 
-          //Make the move and Set that best move as its new position
-          chessGame.move(bestMove);
-          setPosition(chessGame.fen());
-          //Set that the bot is not thinking any longer
-          setIsBotThinking(false);
-        }
-      };
+            const move = chessGame.move(bestMove);
+            if (move) {
+              setPosition(chessGame.fen());
+              setIsBotThinking(false);
 
-      //Terminate stockfish when the game is over
-      return () => {
+              if (chessGame.isGameOver()) {
+                alert("Game Over!");
+              }
+            } else {
+              console.error("Invalid move from Stockfish:", bestMove);
+            }
+          }
+        };
+      } else {
+        console.error("Stockfish is not available.");
+      }
+    };
+
+    const scriptCheckInterval = setInterval(() => {
+      if (window.Stockfish) {
+        initializeStockfish();
+        clearInterval(scriptCheckInterval);
+      }
+    }, 100);
+
+    return () => {
+      if (stockfishRef.current) {
         stockfishRef.current.terminate();
-      };
-    }
+        console.log("Terminating Stockfish...");
+      }
+      clearInterval(scriptCheckInterval);
+    };
   }, []);
 
-  //HOW THE HUMAN MOVES
   const onDrop = ({ sourceSquare, targetSquare }) => {
+    console.log("Human move:", sourceSquare, targetSquare);
+
     const move = chessGame.move({
       from: sourceSquare,
       to: targetSquare,
       promotion: "q",
     });
 
-    //if they make a move that isn't possible, exit
-    if (move === null) return;
+    if (move === null) {
+      console.error("Invalid move.");
+      return;
+    }
 
     setPosition(chessGame.fen());
     setIsBotThinking(true);
 
-    stockfishRef.current.postMessage(`position fen ${chessGame.fen()}`);
-    stockfishRef.current.postMessage("go depth 15"); //this is the command to instruct stockfish to start calculating the next best move
+    if (stockfishRef.current) {
+      const fen = chessGame.fen();
+      console.log("Posting position to Stockfish:", fen);
+      stockfishRef.current.postMessage(`position fen ${fen}`);
+      stockfishRef.current.postMessage("go depth 15");
+    } else {
+      console.error("Stockfish is not initialized.");
+    }
   };
 
   return (
     <>
       <h1>Hi from chessboard</h1>
-      <Chessboard
-        position={position}
-        onDrop={onDrop} // Attach the onDrop handler to the Chessboard component
-      />
+      <Chessboard position={position} onDrop={onDrop} />
+      {isBotThinking && <p>Bot is thinking...</p>}
     </>
   );
 };
+
 export default ChessGame;

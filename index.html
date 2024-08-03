@@ -1,12 +1,15 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + React</title>
-    <script src="https://cdn.jsdelivr.net/npm/stockfish@latest/stockfish.js"></script>
-
+    <script
+      src="https://cdn.jsdelivr.net/gh/niklasf/stockfish.js/stockfish.js"
+      onload="console.log('Stockfish script loaded')"
+      onerror="console.error('Failed to load Stockfish script')"
+    ></script>
   </head>
   <body>
     <div id="root"></div>
