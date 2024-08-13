@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
 
-const ChessGame = () => {
+const ChessGame = ({ difficulty }) => {
   const chessGame = useRef(null);
   const [position, setPosition] = useState("start");
   const [isBotThinking, setIsBotThinking] = useState(false);
@@ -65,6 +65,19 @@ const ChessGame = () => {
     };
   }, []);
 
+  // Function to get Stockfish depth based on difficulty level
+  const getStockfishDepth = (difficulty) => {
+    switch (difficulty) {
+      case "easy":
+        return 5; // shallow depth, easier opponent
+      case "medium":
+        return 10; // medium depth
+      case "hard":
+        return 20; // deep depth, harder opponent
+      default:
+        return 10; // default to medium
+    }
+  };
   const onPieceDrop = (sourceSquare, targetSquare) => {
     console.log(
       "Human move detected in onPieceDrop:",
@@ -84,6 +97,8 @@ const ChessGame = () => {
 
     setPosition(chessGame.current.fen());
     setIsBotThinking(true);
+
+    const depth = getStockfishDepth(difficulty);
 
     if (stockfishRef.current) {
       const fen = chessGame.current.fen();
