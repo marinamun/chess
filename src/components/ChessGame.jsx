@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chessboard } from "react-chessboard";
-import { Chess } from "chess.js"; // Import the Chess class from chess.js
+import { Chess } from "chess.js";
 
 const ChessGame = () => {
   const chessGame = new Chess();
@@ -9,54 +9,62 @@ const ChessGame = () => {
   const stockfishRef = useRef(null);
 
   useEffect(() => {
-    const initializeStockfish = () => {
-      if (window.Stockfish) {
-        console.log("Stockfish is available.");
-        stockfishRef.current = window.Stockfish();
-        stockfishRef.current.onmessage = (event) => {
-          console.log("Stockfish message:", event);
+    const loadStockfish = () => {
+      const worker = new Worker("/js/stockfish-nnue-16-single.js");
+      worker.postMessage = worker.webkitPostMessage || worker.postMessage; // For cross-browser compatibility
+      return worker;
+    };
 
-          if (event && event.startsWith("bestmove")) {
-            const bestMove = event.split(" ")[1];
-            console.log("Best move from Stockfish:", bestMove);
+    stockfishRef.current = loadStockfish();
 
-            const move = chessGame.move(bestMove);
-            if (move) {
-              setPosition(chessGame.fen());
-              setIsBotThinking(false);
-
-              if (chessGame.isGameOver()) {
-                alert("Game Over!");
-              }
-            } else {
-              console.error("Invalid move from Stockfish:", bestMove);
+    stockfishRef.current.onmessage = (event) => {
+      console.log("Received message from Stockfish:", event.data);
+      if (typeof event.data === "string") {
+        if (event.data.startsWith("bestmove")) {
+          const bestMove = event.data.split(" ")[1];
+          console.log("Best move from Stockfish:", bestMove);
+          const move = chessGame.move(bestMove);
+          if (move) {
+            setPosition(chessGame.fen());
+            setIsBotThinking(false);
+            if (chessGame.isGameOver()) {
+              alert("Game Over!");
             }
+          } else {
+            console.error("Invalid move received from Stockfish:", bestMove);
           }
-        };
+        } else if (event.data.startsWith("info")) {
+          console.log("Stockfish info:", event.data);
+        } else {
+          console.warn("Unexpected message from Stockfish:", event.data);
+        }
       } else {
-        console.error("Stockfish is not available.");
+        console.error(
+          "Unexpected data type received from Stockfish:",
+          typeof event.data
+        );
       }
     };
 
-    const scriptCheckInterval = setInterval(() => {
-      if (window.Stockfish) {
-        initializeStockfish();
-        clearInterval(scriptCheckInterval);
-      }
-    }, 100);
+    stockfishRef.current.postMessage("uci");
+    stockfishRef.current.postMessage("ucinewgame");
+    stockfishRef.current.postMessage("isready");
+    console.log("Stockfish initialized and ready to receive commands.");
 
     return () => {
       if (stockfishRef.current) {
         stockfishRef.current.terminate();
         console.log("Terminating Stockfish...");
       }
-      clearInterval(scriptCheckInterval);
     };
   }, []);
 
-  const onDrop = ({ sourceSquare, targetSquare }) => {
-    console.log("Human move:", sourceSquare, targetSquare);
-
+  const onPieceDrop = (sourceSquare, targetSquare) => {
+    console.log(
+      "Human move detected in onPieceDrop:",
+      sourceSquare,
+      targetSquare
+    );
     const move = chessGame.move({
       from: sourceSquare,
       to: targetSquare,
@@ -65,7 +73,7 @@ const ChessGame = () => {
 
     if (move === null) {
       console.error("Invalid move.");
-      return;
+      return false;
     }
 
     setPosition(chessGame.fen());
@@ -79,12 +87,14 @@ const ChessGame = () => {
     } else {
       console.error("Stockfish is not initialized.");
     }
+
+    return true;
   };
 
   return (
     <>
       <h1>Hi from chessboard</h1>
-      <Chessboard position={position} onDrop={onDrop} />
+      <Chessboard position={position} onPieceDrop={onPieceDrop} />
       {isBotThinking && <p>Bot is thinking...</p>}
     </>
   );
