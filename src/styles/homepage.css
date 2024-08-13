@@ -1,0 +1,51 @@
+h1,
+h2,
+h3,
+p,
+button {
+  color: #6875d8;
+  /*   text-shadow: 2px 2px 0 white,  -1px -1px 0 white,
+   2px -2px 0 white,  -1px 1px 0 whit */
+}
+.homepage-container {
+  /*  background-image: url("../media/pinkchess.png");
+  background-size: cover;
+  background-position: center; */
+  background-color: #f6c3d6;
+
+  width: 100vw; /* Full viewport width */
+  height: 100vh;
+  top: 0;
+  left: 0;
+
+  position: absolute;
+}
+
+.homepage-container h1 {
+  margin-top: 130px;
+  margin-bottom: 100px;
+}
+
+.homepage-container button {
+  margin-left: 15px;
+  margin-right: 15px;
+  display: flex;
+  padding: 20px;
+
+  align-items: center;
+  justify-content: center;
+}
+.level-btns {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+.level-btns img {
+  align-items: center;
+}
+
+a {
+  color: #444ded;
+}

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
+import "../styles/chessgame.css";
 
 const ChessGame = ({ difficulty }) => {
   const chessGame = useRef(null);
@@ -114,9 +115,9 @@ const ChessGame = ({ difficulty }) => {
 
   return (
     <>
-      <h1>Hi from chessboard</h1>
-      <Chessboard position={position} onPieceDrop={onPieceDrop} />
-      {isBotThinking && <p>Bot is thinking...</p>}
+      <h1>Suerte y no seas bazu</h1>
+      <Chessboard position={position} onPieceDrop={onPieceDrop} className="ourChessboard"/>
+      
     </>
   );
 };
