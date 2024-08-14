@@ -1,9 +1,10 @@
 h1,
 h2,
 h3,
-p,
-button {
-  color: #6875d8;
+p {
+  color: #d6c9ff;
+  font-family: "DM Sans", sans-serif;
+
   /*   text-shadow: 2px 2px 0 white,  -1px -1px 0 white,
    2px -2px 0 white,  -1px 1px 0 whit */
 }
@@ -11,7 +12,7 @@ button {
   /*  background-image: url("../media/pinkchess.png");
   background-size: cover;
   background-position: center; */
-  background-color: #f6c3d6;
+  background-color: #38217a;
 
   width: 100vw; /* Full viewport width */
   height: 100vh;
@@ -27,10 +28,12 @@ button {
 }
 
 .homepage-container button {
+  color: #38217a;
   margin-left: 15px;
   margin-right: 15px;
   display: flex;
   padding: 20px;
+  font-family: "DM Sans", sans-serif;
 
   align-items: center;
   justify-content: center;
@@ -47,5 +50,19 @@ button {
 }
 
 a {
+  font-family: "DM Sans", sans-serif;
+
   color: #444ded;
+}
+.input-username {
+  padding: 15px;
+  width: 170px;
+  border: none;
+  border-radius: 10px;
+  font-family: "DM Sans", sans-serif;
+  text-align: center;
+}
+.input-username::placeholder {
+  color: #38217a;
+  font-size: 17px;
 }

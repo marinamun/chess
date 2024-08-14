@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
+import { Link } from "react-router-dom";
 import "../styles/chessgame.css";
+import PlayersInfo from "./PlayersInfo";
 
-const ChessGame = ({ difficulty }) => {
+const ChessGame = ({ difficulty, username }) => {
   const chessGame = useRef(null);
   const [position, setPosition] = useState("start");
   const [isBotThinking, setIsBotThinking] = useState(false);
@@ -115,9 +117,20 @@ const ChessGame = ({ difficulty }) => {
 
   return (
     <>
-      <h1>Suerte y no seas bazu</h1>
-      <Chessboard position={position} onPieceDrop={onPieceDrop} className="ourChessboard"/>
-      
+      <div className="chessgame-container">
+        {/* Back to Homepage Button */}
+        <div className="chessgame-left">
+          <Link to="/">
+            <button>Back to Homepage</button>
+          </Link>
+
+          <h1>Suerte y no seas bazu</h1>
+          <Chessboard position={position} onPieceDrop={onPieceDrop} />
+        </div>
+        <div className="chessgame-right">
+          <PlayersInfo difficulty={difficulty} username={username} />
+        </div>
+      </div>{" "}
     </>
   );
 };

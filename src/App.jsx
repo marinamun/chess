@@ -6,12 +6,21 @@ import "./App.css";
 
 function App() {
   const [difficulty, setDifficulty] = useState("medium"); // Default difficulty
+  const [username, setUsername] = useState("");
 
   return (
     <>
       <Routes>
-        <Route path="/" element={<Homepage setDifficulty={setDifficulty} />} />
-        <Route path="/play" element={<ChessGame difficulty={difficulty} />} />
+        <Route
+          path="/"
+          element={
+            <Homepage setDifficulty={setDifficulty} setUsername={setUsername} />
+          }
+        />
+        <Route
+          path="/play"
+          element={<ChessGame difficulty={difficulty} username={username} />}
+        />
       </Routes>
     </>
   );

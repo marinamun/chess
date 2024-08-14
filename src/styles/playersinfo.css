@@ -1,0 +1,10 @@
+.enemy-info {
+  z-index: 1000; /* Ensure it’s on top */
+  position: relative; /* Ensure z-index works */
+}
+.enemy-info p {
+  color: black;
+}
+.enemy-info h3 {
+  color: black;
+}
