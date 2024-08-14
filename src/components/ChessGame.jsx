@@ -1,15 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/chessgame.css";
 import PlayersInfo from "./PlayersInfo";
+import nepo from "../media/nepo.gif";
 
 const ChessGame = ({ difficulty, username }) => {
   const chessGame = useRef(null);
   const [position, setPosition] = useState("start");
   const [isBotThinking, setIsBotThinking] = useState(false);
   const stockfishRef = useRef(null);
+  const [gameOver, setGameOver] = useState(null); // null for no result, 'win' for player win, 'loss' for player loss
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Initialize the chess game only once
@@ -36,9 +39,14 @@ const ChessGame = ({ difficulty, username }) => {
           if (move) {
             setPosition(chessGame.current.fen());
             setIsBotThinking(false);
-            if (chessGame.current.isGameOver()) {
-              alert("Game Over!");
-            }
+
+            // Now check if the game is over after bot makes its move
+            // Important: Checking after move is applied to the board
+            setTimeout(() => {
+              if (chessGame.current.isGameOver()) {
+                handleGameOver();
+              }
+            }, 100); // Small delay to ensure move is visible on board
           } else {
             console.error("Invalid move received from Stockfish:", bestMove);
           }
@@ -68,6 +76,22 @@ const ChessGame = ({ difficulty, username }) => {
     };
   }, []);
 
+  // Dealing with the game result
+  const handleGameOver = () => {
+    if (chessGame.current.isCheckmate()) {
+      if (chessGame.current.turn() === "b") {
+        setGameOver("win"); // Player wins
+        alert("¡Vamooooos! You finished your opponent🥳");
+      } else {
+        setGameOver("loss"); // Player loses
+        alert("LOSERRRR! 'You deserve prison' - T.S");
+      }
+    } else if (chessGame.current.isDraw()) {
+      setGameOver("draw"); // It's a draw
+      alert("It's a Draw!*side eye*🙄");
+    }
+  };
+
   // Function to get Stockfish depth based on difficulty level
   const getStockfishDepth = (difficulty) => {
     switch (difficulty) {
@@ -81,6 +105,7 @@ const ChessGame = ({ difficulty, username }) => {
         return 10; // default to medium
     }
   };
+
   const onPieceDrop = (sourceSquare, targetSquare) => {
     console.log(
       "Human move detected in onPieceDrop:",
@@ -112,6 +137,8 @@ const ChessGame = ({ difficulty, username }) => {
       console.error("Stockfish is not initialized.");
     }
 
+    // Do not check for game over here. Wait until after the bot makes its move.
+
     return true;
   };
 
@@ -120,6 +147,9 @@ const ChessGame = ({ difficulty, username }) => {
       <div className="chessgame-container">
         {/* Back to Homepage Button */}
         <div className="chessgame-left">
+          <img src={nepo} />
+        </div>
+        <div className="chessgame-middle">
           <Link to="/">
             <button>Back to Homepage</button>
           </Link>
@@ -130,7 +160,7 @@ const ChessGame = ({ difficulty, username }) => {
         <div className="chessgame-right">
           <PlayersInfo difficulty={difficulty} username={username} />
         </div>
-      </div>{" "}
+      </div>
     </>
   );
 };

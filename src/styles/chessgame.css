@@ -1,21 +1,29 @@
 .chessgame-container {
   display: flex;
   flex-direction: row;
-  
+
   align-items: center;
 }
 .chessgame-container h1 {
   color: #38217a;
 }
+.chessgame-container h2 {
+  color: #38217a;
+}
 body {
   background-color: #d6c9ff;
 }
-.chessgame-left {
-/*   border: 1px solid black; */
+.chessgame-middle {
+  /*   border: 1px solid black; */
   margin-right: 50px;
+  margin-left: 50px;
 }
 .chessgame-right {
   border: 2px solid black;
   border-radius: 15px;
   padding: 15px;
+}
+.chessgame-left img {
+  border-radius: 15px;
+  width: 250px;
 }
