@@ -157,7 +157,7 @@ const ChessGame = ({ difficulty, username }) => {
           <Chessboard
             position={position}
             onPieceDrop={onPieceDrop}
-            boardWidth={520}
+            boardWidth={420}
           />
         </div>
         <div className="chessgame-right">
