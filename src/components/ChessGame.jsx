@@ -148,13 +148,17 @@ const ChessGame = ({ difficulty, username }) => {
         {/* Back to Homepage Button */}
         <div className="chessgame-left">
           <img src={nepo} />
-          <Link to="/" >
+          <Link to="/">
             <button>🔙</button>
           </Link>
         </div>
         <div className="chessgame-middle">
           <h1>Suerte y no seas bazu</h1>
-          <Chessboard position={position} onPieceDrop={onPieceDrop} />
+          <Chessboard
+            position={position}
+            onPieceDrop={onPieceDrop}
+            boardWidth={520}
+          />
         </div>
         <div className="chessgame-right">
           <PlayersInfo difficulty={difficulty} username={username} />

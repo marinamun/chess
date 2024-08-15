@@ -3,7 +3,7 @@
   flex-direction: row;
 
   align-items: center;
-  margin-bottom: 30px;
+  /* margin-bottom: 30px; */
 }
 .chessgame-container h1 {
   color: #38217a;
