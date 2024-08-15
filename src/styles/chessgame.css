@@ -13,6 +13,14 @@
 body {
   background-color: #d6c9ff;
 }
+.chessgame-left {
+  display: flex;
+  flex-direction: column;
+}
+.chessgame-left button {
+  margin-top: 30px;
+  font-size: 22px;
+}
 .chessgame-middle {
   /*   border: 1px solid black; */
   margin-right: 50px;
@@ -26,4 +34,12 @@ body {
 .chessgame-left img {
   border-radius: 15px;
   width: 250px;
+}
+/* Ensure the chessboard scales appropriately */
+.chessboard {
+  width: 50vw; /* Dynamic width for responsiveness */
+  height: auto; /* Maintain aspect ratio */
+  max-width: 90vw; /* Limit the width for smaller screens */
+  max-height: 90vh; /* Limit the height for smaller screens */
+  object-fit: contain;
 }
