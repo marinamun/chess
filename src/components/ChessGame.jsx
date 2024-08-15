@@ -153,7 +153,7 @@ const ChessGame = ({ difficulty, username }) => {
           </Link>
         </div>
         <div className="chessgame-middle">
-          <h1>Suerte y no seas bazu</h1>
+          <h1>Good luck</h1>
           <Chessboard
             position={position}
             onPieceDrop={onPieceDrop}

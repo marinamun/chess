@@ -23,9 +23,8 @@ body {
   font-size: 22px;
 }
 .chessgame-middle {
-  /*   border: 1px solid black; */
-  margin-right: 50px;
-  margin-left: 50px;
+  margin-right: 60px;
+  margin-left: 60px;
 }
 .chessgame-right {
   border: 2px solid black;
@@ -34,7 +33,7 @@ body {
 }
 .chessgame-left img {
   border-radius: 15px;
-  width: 250px;
+  width: 210px;
 }
 /* Ensure the chessboard scales appropriately */
 .chessboard {
